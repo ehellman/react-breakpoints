@@ -21,14 +21,12 @@ class ConnectedBreakpoints extends React.Component {
     window.removeEventListener('load', this.readWidth.bind(this))
   }
   readWidth(event) {
-    console.log('read width')
     let width = event.target.innerWidth
       ? event.target.innerWidth
       : window.innerWidth
     this.calculateBreakpoint(width)
   }
   calculateBreakpoint(width) {
-    console.log('calculating breakpoint...')
     if (width < this.props.breakpoints[1]) {
       this.props.currentBreakpoint != 1 && this.props.changeBreakpoint(1)
     } else if (width >= this.props.breakpoints[0] && width < this.props.breakpoints[2]) {
