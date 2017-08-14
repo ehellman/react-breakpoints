@@ -12,7 +12,7 @@ It is still under development with `1.0.0` being the next milestone, it will inc
 - A fully featured `Breakpoints` component that works without Redux.
 
 ## Example
-```
+```js
 const Navigation = props => (
   {
     props.currentBreakpoint >= 3
@@ -34,7 +34,7 @@ export default connect(mapStateToProps)(Navigation)
 
 ## Usage
 
-```
+```js
 // index.js
 
 import { ConnectedBreakpoints } from 'react-breakpoints'
