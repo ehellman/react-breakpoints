@@ -1,4 +1,4 @@
-# react-breakpoints
+# react-breakpoints [![npm](https://img.shields.io/npm/v/react-breakpoints.svg)](https://www.npmjs.com/package/react-breakpoints)
 
 This library contains a component that solves the problem that CSS alone could not solve. Sometimes you want to create an application that looks a certain way on desktop and a certain way on mobile. Sometimes they look too different for you to be able to just style the component, you have to make one component for desktop and another for mobile. This is bad, because the JavaScript is still running for the desktop component on mobile, even if you are not seeing it.
 
