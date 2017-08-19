@@ -1,6 +1,6 @@
 import { CHANGE_BREAKPOINT } from './action'
 
-const breakpointsReducer = (state = 1, action) => {
+const breakpointsReducer = (state = 0, action) => {
   switch (action.type) {
     case CHANGE_BREAKPOINT:
       return action.payload
