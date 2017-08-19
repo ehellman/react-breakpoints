@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { changeBreakpoint } from './action'
 import PropTypes from 'prop-types'
+import { ERRORS } from './messages'
 
 
 class ConnectedBreakpoints extends React.Component {
@@ -13,6 +14,7 @@ class ConnectedBreakpoints extends React.Component {
     nextProps.guessedBreakpoint && this.props.changeBreakpoint(this.props.guessedBreakpoint)
   }
   componentWillMount() {
+    if (!this.props.breakpoints || this.props.breakpoints.length <= 2) throw new Error(ERRORS.NO_CONNECTED_BREAKPOINTS)
     window.addEventListener('resize', this.readWidth.bind(this))
     window.addEventListener('load', this.readWidth.bind(this))
   }
@@ -27,18 +29,24 @@ class ConnectedBreakpoints extends React.Component {
     this.calculateBreakpoint(width)
   }
   calculateBreakpoint(width) {
-    if (width < this.props.breakpoints[1]) {
-      this.props.currentBreakpoint != 1 && this.props.changeBreakpoint(1)
-    } else if (width >= this.props.breakpoints[0] && width < this.props.breakpoints[2]) {
-      this.props.currentBreakpoint != 2 && this.props.changeBreakpoint(2)
-    } else if (width >= this.props.breakpoints[1] && width < this.props.breakpoints[3]) {
-      this.props.currentBreakpoint != 3 && this.props.changeBreakpoint(3)
-    } else if (width >= this.props.breakpoints[2] && width < this.props.breakpoints[4]) {
-      this.props.currentBreakpoint != 4 && this.props.changeBreakpoint(4)
-    } else if (width >= this.props.breakpoints[3] && width < this.props.breakpoints[5]) {
-      this.props.currentBreakpoint != 5 && this.props.changeBreakpoint(5)
-    } else if (width >= this.props.breakpoints[4] && width > this.props.breakpoints[5]) {
-      this.props.currentBreakpoint != 6 && this.props.changeBreakpoint(6)
+    if (this.props.breakpoints.length > 2) {
+
+      this.props.breakpoints.map((breakpoint, i) => {
+
+        if (i == 0 && width < this.props.breakpoints[i + 1]) {
+          this.props.currentBreakpoint != i && this.props.changeBreakpoint(i)
+        }
+        if (i >= 1 && i < this.props.breakpoints.length) {
+          if (width >= this.props.breakpoints[i - 1] && width < this.props.breakpoints[i]) {
+            this.props.currentBreakpoint != i - 1 && this.props.changeBreakpoint(i - 1) 
+          }
+        }
+        if (i == this.props.breakpoints.length - 1) {
+          if (width >= this.props.breakpoints[i]) {
+            this.props.currentBreakpoint != i && this.props.changeBreakpoint(i) 
+          }
+        }
+      })
     }
   }
   render() {
@@ -48,14 +56,11 @@ class ConnectedBreakpoints extends React.Component {
 
 ConnectedBreakpoints.PropTypes = {
   guessedBreakpoint: PropTypes.number,
-  breakpoints: PropTypes.arrayOf(PropTypes.number)
+  breakpoints: PropTypes.arrayOf(PropTypes.number).isRequired
 }
 
-const mapStateToProps = state => {
-  return {
-    currentBreakpoint: state.currentBreakpoint
-  }
-}
+const mapStateToProps = state => ({ currentBreakpoint: state.currentBreakpoint })
+
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     changeBreakpoint: (newBreakpoint) => {
