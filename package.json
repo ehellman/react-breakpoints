@@ -1,6 +1,6 @@
 {
   "name": "react-breakpoints",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "A React component that sets breakpoints in the store, allowing you to load different components in different breakpoints",
   "main": "lib/index.js",
   "repository": {

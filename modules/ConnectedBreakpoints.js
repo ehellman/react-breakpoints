@@ -17,10 +17,12 @@ class ConnectedBreakpoints extends React.Component {
     if (!this.props.breakpoints || this.props.breakpoints.length <= 2) throw new Error(ERRORS.NO_CONNECTED_BREAKPOINTS)
     window.addEventListener('resize', this.readWidth.bind(this))
     window.addEventListener('load', this.readWidth.bind(this))
+    window.addEventListener('orientationchange', this.readWidth.bind(this))
   }
   componentWillUnmount() {
     window.removeEventListener('resize', this.readWidth.bind(this))
     window.removeEventListener('load', this.readWidth.bind(this))
+    window.removeEventListener('orientationchange', this.readWidth.bind(this))
   }
   readWidth(event) {
     let width = event.target.innerWidth
