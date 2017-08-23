@@ -45,7 +45,7 @@ export default connect(mapStateToProps)(Navigation)
 ```js
 // index.js
 
-import { createBreakpointsReducer } from 'react-breakpoints'
+import { ConnectedBreakpoints } from 'react-breakpoints'
 
 const breakpoints = [
   320,
@@ -64,12 +64,14 @@ ReactDOM.render(
   </Provider>,
   document.getElementById('root')
 )
+```
 
-
+### In your `combineReducers`
+```
 // reducer.js
 
 import { combineReducers } from 'redux'
-import { breakpointsReducer } from 'react-breakpoints'
+import { createBreakpointsReducer } from 'react-breakpoints'
 
 export default combineReducers({
   currentBreakpoint: createBreakpointsReducer()
