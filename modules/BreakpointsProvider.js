@@ -1,36 +1,50 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { ERRORS } from './messages'
 
-class Breakpoints extends React.Component {
-  constructor() {
-    super()
+class BreakpointsProvider extends React.Component {
+  static contextTypes = {
+    currentBreakpoint: PropTypes.number
+  }
+  static childContextTypes = {
+    currentBreakpoint: PropTypes.number
+  }
+  static propTypes = {
+    breakpoints: PropTypes.arrayOf(PropTypes.number),
+    guessedBreakpoint: PropTypes.number
+  }
+  constructor(props, context) {
+    super(props, context)
     this.state = {
-      currentBreakpoint: null,
-      breakpoints: []
+      breakpoints: this.props.breakpoints || [],
+      currentBreakpoint: this.props.guessedBreakpoint || 2
     }
-    this.calculateBreakpoint = this.calculateBreakpoint.bind(this)
+  }
+  getChildContext() {
+    return {
+      currentBreakpoint: this.state.currentBreakpoint
+    }
   }
   componentWillMount() {
     if (!this.props.breakpoints || this.props.breakpoints.length <= 2) throw new Error(ERRORS.NO_BREAKPOINTS)
-    this.setState({ breakpoints: this.props.breakpoints })
-    window.addEventListener('resize', this.readWidth.bind(this))
-    window.addEventListener('load', this.readWidth.bind(this))
+    this.props.breakpoints !== this.state.breakpoints && 
+      this.setState({ breakpoints: this.props.breakpoints })
+    window.addEventListener('resize', this.readWidth)
+    window.addEventListener('load', this.readWidth)
   }
   componentWillUnmount() {
-    window.removeEventListener('resize', this.readWidth.bind(this))
-    window.removeEventListener('load', this.readWidth.bind(this))
+    window.removeEventListener('resize', this.readWidth)
+    window.removeEventListener('load', this.readWidth)
   }
-  readWidth(event) {
+  readWidth = event => {
     let width = event.target.innerWidth
       ? event.target.innerWidth
       : window.innerWidth
     this.calculateBreakpoint(width)
   }
-  calculateBreakpoint(width) {
+  calculateBreakpoint = width => {
     if (this.state.breakpoints.length > 2) {
-      
       this.state.breakpoints.map((breakpoint, i) => {
-
         if (i == 0 && width < this.state.breakpoints[i + 1]) {
           this.state.currentBreakpoint != i && this.setState({ currentBreakpoint: i })
         }
@@ -44,17 +58,12 @@ class Breakpoints extends React.Component {
             this.state.currentBreakpoint != i && this.setState({ currentBreakpoint: i })
           }
         }
-        
       })
-
     }
-
   }
   render() {
-    return React.cloneElement(this.props.children, { currentBreakpoint: this.state.currentBreakpoint })
+    return this.props.children
   }
 }
 
-
-
-export default Breakpoints 
+export default BreakpointsProvider

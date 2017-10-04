@@ -1,7 +1,7 @@
 {
   "name": "react-breakpoints",
-  "version": "0.5.1",
-  "description": "A React component that sets breakpoints in the store, allowing you to load different components in different breakpoints",
+  "version": "1.0.0",
+  "description": "A library that allows you to mount/unmount components depending on the viewport size. Welcome to the next level of responsive React applications.",
   "main": "lib/index.js",
   "repository": {
     "type": "git",
@@ -12,8 +12,7 @@
     "responsive",
     "breakpoints",
     "breakpoint",
-    "react",
-    "redux"
+    "react"
   ],
   "scripts": {
     "clean": "rimraf lib es",
@@ -23,9 +22,7 @@
     "prepublish": "npm run compile"
   },
   "peerDependencies": {
-    "react": "^15.0.0-0 || ^16.0.0-0",
-    "react-redux": "^4.3.0 || ^5.0.0",
-    "redux": "^3.0.0"
+    "react": "^15.0.0-0 || ^16.0.0-0"
   },
   "author": "Erik Hellman",
   "license": "MIT",
@@ -45,8 +42,6 @@
     "cross-env": "5.0.5",
     "prop-types": "^15.5.10",
     "react": "^15.6.1",
-    "react-redux": "^5.0.6",
-    "redux": "^3.7.2",
     "rimraf": "2.6.1",
     "webpack": "^2.6.1"
   }

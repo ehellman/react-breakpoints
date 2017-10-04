@@ -1,3 +1,2 @@
-export ConnectedBreakpoints from './ConnectedBreakpoints'
-export Breakpoints from './Breakpoints'
-export createBreakpointsReducer from './reducer'
+export BreakpointsProvider from './BreakpointsProvider'
+export withBreakpoints from './withBreakpoints'
