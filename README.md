@@ -19,10 +19,6 @@ This library is not dependent on Redux, see documentation for instructions on ho
 **VERSION SOMEDAY**
 - [ ] Work with just 1 or 2 breakpoints instead of a minimum of 3.
 
-## Example
-```js
-add exampe with props.cubre > 3 <Comp/>
-```
 ## Installation
 `npm install --save react-breakpoints`
 
