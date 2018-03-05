@@ -30,12 +30,16 @@ class BreakpointsProvider extends React.Component {
     if (!this.props.breakpoints || this.props.breakpoints.length <= 2) throw new Error(ERRORS.NO_BREAKPOINTS)
     this.props.breakpoints !== this.state.breakpoints && 
       this.setState({ breakpoints: this.props.breakpoints })
-    window.addEventListener('resize', this.readWidth)
-    window.addEventListener('load', this.readWidth)
+    if (window !== undefined) {
+      window.addEventListener('resize', this.readWidth)
+      window.addEventListener('load', this.readWidth)
+    }
   }
   componentWillUnmount() {
-    window.removeEventListener('resize', this.readWidth)
-    window.removeEventListener('load', this.readWidth)
+    if (window !== undefined) {
+      window.removeEventListener('resize', this.readWidth)
+      window.removeEventListener('load', this.readWidth)
+    }
   }
   readWidth = event => {
     let width = event.target.innerWidth
