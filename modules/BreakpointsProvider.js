@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Provider } from './BreakpointsContext'
 import { ERRORS } from './messages'
 
 class BreakpointsProvider extends React.Component {
@@ -62,7 +63,11 @@ class BreakpointsProvider extends React.Component {
     }
   }
   render() {
-    return this.props.children
+    return (
+      <Provider value={this.getChildContext()}>
+        {this.props.children}
+      </Provider>
+    )
   }
 }
 
