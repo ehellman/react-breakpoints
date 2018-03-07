@@ -6,9 +6,12 @@ const BreakpointsContext = React.createContext
   : createReactContext()
 
 const {
-  Consumer,
   Provider,
+  Consumer,
 } = BreakpointsContext
+
+Provider.displayName = 'ReactBreakpoints.Provider'
+Consumer.displayName = 'ReactBreakpoints.Consumer'
 
 export {
   Provider,

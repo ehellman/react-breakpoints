@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import debounce from 'lodash.debounce'
 import { Provider } from './BreakpointsContext'
 import { ERRORS } from './messages'
-import debounce from 'lodash.debounce'
 
-class BreakpointsProvider extends React.Component {
+class ReactBreakpoints extends React.Component {
   static contextTypes = {
     screenWidth: PropTypes.number,
     breakpoints: PropTypes.objectOf(PropTypes.number),
@@ -107,4 +107,4 @@ class BreakpointsProvider extends React.Component {
   }
 }
 
-export default BreakpointsProvider
+export default ReactBreakpoints
