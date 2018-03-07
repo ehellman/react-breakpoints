@@ -2,74 +2,106 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Provider } from './BreakpointsContext'
 import { ERRORS } from './messages'
+import debounce from 'lodash.debounce'
 
 class BreakpointsProvider extends React.Component {
   static contextTypes = {
-    currentBreakpoint: PropTypes.number
+    screenWidth: PropTypes.number,
+    breakpoints: PropTypes.objectOf(PropTypes.number),
   }
   static childContextTypes = {
-    currentBreakpoint: PropTypes.number
+    screenWidth: PropTypes.number,
+    breakpoints: PropTypes.objectOf(PropTypes.number),
+  }
+  static defaultProps = {
+    debounceResize: true,
+    debounceDelay: 50,
   }
   static propTypes = {
-    breakpoints: PropTypes.arrayOf(PropTypes.number),
-    guessedBreakpoint: PropTypes.number
+    /*
+      @breakpoints
+      Your breakpoints object.
+     */
+    breakpoints: PropTypes.objectOf(PropTypes.number),
+    /*
+      @guessedBreakpoint
+      When rendering on the server, you can do your own magic with for example UA
+      to guess which viewport width a user probably has.
+     */
+    guessedBreakpoint: PropTypes.number, // from server
+    /*
+      @defaultBreakpoint
+      In case you don't want to default to mobile on SSR and no guessedBreakpoint
+      is passed, use defaultBreakpoint to set your own value.
+     */
+    defaultBreakpoint: PropTypes.number,
+    /*
+      @debounceResize
+      If you don't want the resize listener to be debounced, set to false.
+     */
+    debounceResize: PropTypes.bool,
+    /*
+      @debounceDelay
+      Set a custom delay for how long the debounce timeout should be.
+     */
+    debounceDelay: PropTypes.number,
   }
   constructor(props, context) {
     super(props, context)
     this.state = {
-      breakpoints: this.props.breakpoints || [],
-      currentBreakpoint: this.props.guessedBreakpoint || 2
+      screenWidth: this.props.guessedBreakpoint || this.props.defaultBreakpoint,
+      breakpoints: this.props.breakpoints || {},
     }
   }
   getChildContext() {
     return {
-      currentBreakpoint: this.state.currentBreakpoint
+      breakpoints: {
+        ...this.state.breakpoints,
+      },
+      screenWidth: this.state.screenWidth,
     }
   }
   componentWillMount() {
-    if (!this.props.breakpoints || this.props.breakpoints.length <= 2) throw new Error(ERRORS.NO_BREAKPOINTS)
+    if (!this.props.breakpoints) throw new Error(ERRORS.NO_BREAKPOINTS)
+    if (typeof this.props.breakpoints !== 'object') throw new Error(ERRORS.NOT_OBJECT)
     this.props.breakpoints !== this.state.breakpoints && 
       this.setState({ breakpoints: this.props.breakpoints })
     if (window !== undefined) {
-      window.addEventListener('resize', this.readWidth)
+      if (this.props.debounceResize) {
+        window.addEventListener('resize', debounce(this.readWidth, this.props.debounceDelay))
+      } else {
+        window.addEventListener('resize', this.readWidth)        
+      }
+      window.addEventListener('orientationchange', this.readWidth)
       window.addEventListener('load', this.readWidth)
     }
+
   }
   componentWillUnmount() {
     if (window !== undefined) {
-      window.removeEventListener('resize', this.readWidth)
+      if (this.props.debounceResize) {
+        window.addEventListener('resize', debounce(this.readWidth, this.props.debounceDelay))
+      } else {
+        window.addEventListener('resize', this.readWidth)        
+      }
+      window.removeEventListener('orientationchange', this.readWidth)
       window.removeEventListener('load', this.readWidth)
     }
   }
   readWidth = event => {
-    let width = event.target.innerWidth
-      ? event.target.innerWidth
-      : window.innerWidth
-    this.calculateBreakpoint(width)
-  }
-  calculateBreakpoint = width => {
-    if (this.state.breakpoints.length > 2) {
-      this.state.breakpoints.map((breakpoint, i) => {
-        if (i == 0 && width < this.state.breakpoints[i + 1]) {
-          this.state.currentBreakpoint != i && this.setState({ currentBreakpoint: i })
-        }
-        if (i >= 1 && i < this.state.breakpoints.length) {
-          if (width >= this.state.breakpoints[i - 1] && width < this.state.breakpoints[i]) {
-            this.state.currentBreakpoint != i - 1 && this.setState({ currentBreakpoint: i - 1 })
-          }
-        }
-        if (i == this.state.breakpoints.length - 1) {
-          if (width >= this.state.breakpoints[i]) {
-            this.state.currentBreakpoint != i && this.setState({ currentBreakpoint: i })
-          }
-        }
-      })
-    }
+    this.setState({
+      screenWidth: event.target.innerWidth
+        ? event.target.innerWidth
+        : window.innerWidth
+    })
   }
   render() {
+    const {
+      children
+    } = this.props
     return (
       <Provider value={this.getChildContext()}>
-        {this.props.children}
+        {children ? React.Children.only(children) : null}
       </Provider>
     )
   }
