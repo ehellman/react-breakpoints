@@ -49,7 +49,7 @@ ReactDOM.render(
 
 ## Inside your components
 
-When you want access to the current screen width inside a component you import the `withBreakpoints` function, wrapping your component when you export it. This will give you access to `props.screenWidth` which updates whenever you resize your window or your device orientation changes.
+When you want access to the current screen width inside a component you import the `withBreakpoints` function, wrapping your component when you export it. This will give you access to `props.screenWidth` which updates whenever you resize your window or your device orientation changes and `props.breakpoints` which is the original object which you supplied to the `ReactBreakpoints` component.
 
 ```js
 import { withBreakpoints } from 'react-breakpoints'
@@ -67,6 +67,7 @@ class Navigation extends React.Component {
     )
   }
 }
+
 
 export default withBreakpoints(Navigation)
 ```
