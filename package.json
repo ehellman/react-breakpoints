@@ -1,6 +1,6 @@
 {
   "name": "react-breakpoints",
-  "version": "2.0.1",
+  "version": "2.0.3",
   "description": "A library that allows you to mount/unmount components depending on the viewport size. Welcome to the next level of responsive React applications.",
   "main": "lib/index.js",
   "repository": {
@@ -22,7 +22,9 @@
     "prepublish": "npm run compile"
   },
   "peerDependencies": {
-    "react": "^15.0.0-0 || ^16.0.0-0"
+    "react": "^15.0.0-0 || ^16.0.0-0",
+    "create-react-context": ">= 0.2.1 < 1",
+    "lodash.debounce": ">= 4.0.8 < 5"    
   },
   "author": "Erik Hellman",
   "license": "MIT",
@@ -42,9 +44,11 @@
     "cross-env": "5.0.5",
     "prop-types": "15.6.1",
     "rimraf": "2.6.1",
-    "webpack": "^2.6.1",
-    "create-react-context": "0.2.1",
+    "webpack": "^2.6.1"
+  },
+  "dependencies": {
+    "lodash.debounce": "4.0.8",
     "hoist-non-react-statics": "2.5.0",
-    "lodash.debounce": "4.0.8"
+    "create-react-context": "0.2.1"
   }
 }
