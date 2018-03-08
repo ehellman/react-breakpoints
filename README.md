@@ -8,49 +8,48 @@ This library solves that.
 
 This library is not dependent on Redux, see documentation for instructions on how to use.
 
+Version 2.0.0 is a rewrite with the new context API that came in React `16.3.0`. A polyfill for older React versions is included in the library, so it is backwards compatible with `15.x.x` and `16.x.x`.
+
 ## Roadmap
 
-**VERSION 1.1.0**
+**VERSION 3.0.0**
 - [ ] Test that `guessedBreakpoint` prop from server side rendering works, make changes if needed.
-
-**VERSION 1.2.0**
 - [ ] Example project
-
-**VERSION SOMEDAY**
-- [ ] Work with just 1 or 2 breakpoints instead of a minimum of 3.
+- [ ] `debounceOptions` object passdown if needed.
 
 ## Installation
 `npm install --save react-breakpoints`
 
 ## Usage
 
-First you need to include the `BreakpointsProvider` component in your component tree. It expects an array of **at least 3 numeric values** that will represent your breakpoints.
+First you need to include the `ReactBreakpoints` component in your component tree. It expects an object that will represent your breakpoints.
 
 ```js
 // index.js
 import App from './App'
 import { BreakpointsProvider } from 'react-breakpoints'
 
-const breakpoints = [
-  320,
-  375,
-  768,
-  992,
-  1200,
-  1560 
-]
+const breakpoints = {
+  mobile: 320,
+  mobileLandscape: 480,
+  tablet: 768,
+  tabletLandscape: 1024,
+  desktop: 1200,
+  desktopLarge: 1500,
+  desktopWide: 1920,
+}
 
 ReactDOM.render(
-  <BreakpointsProvider breakpoints={breakpoints}>
+  <ReactBreakpoints breakpoints={breakpoints}>
     <App />
-  </BreakpointsProvider>, 
+  </ReactBreakpoints>, 
   document.getElementById('root')
 )
 ```
 
 ## Inside your components
 
-When you want access to the current breakpoint inside a component you import the `withBreakpoints` function, wrapping your component when you export it. This will give you access to `props.currentBreakpoint` which updates whenever you resize your window or your device orientation changes.
+When you want access to the current screen width inside a component you import the `withBreakpoints` function, wrapping your component when you export it. This will give you access to `props.screenWidth` which updates whenever you resize your window or your device orientation changes and `props.breakpoints` which is the original object which you supplied to the `ReactBreakpoints` component.
 
 ```js
 import { withBreakpoints } from 'react-breakpoints'
@@ -60,7 +59,7 @@ class Navigation extends React.Component {
     return (
       <div>
         {
-          this.props.currentBreakpoint > 3
+          this.props.screenWidth > this.props.breakpoints.desktop
             ? <DesktopNavigation />
             : <TouchNavigation />
         }
@@ -69,7 +68,8 @@ class Navigation extends React.Component {
   }
 }
 
-export default withBreakpoints(MyComponent)
+
+export default withBreakpoints(Navigation)
 ```
 
 It works the exact same way in stateless components, here is a more extensive example:
@@ -77,15 +77,15 @@ It works the exact same way in stateless components, here is a more extensive ex
 ```js
 import { withBreakpoints } from 'react-breakpoints'
 
-const List = props => {
+const MyComponent = ({ screenWidth, breakpoints }) => {
   let renderList
-  if (props.currentBreakpoint <= 2) {
+  if (screenWidth < breakpoints.tablet) {
     renderList = <MobileList />
   }
-  else if (props.currentBreakpoint >= 3 && props.currentBreakpoint <= 4) {
+  else if (screenWidth >= breakpoints.tablet && screenWidth < breakpoints.desktop) {
     renderList = <TabletList />
   }
-  else if (props.currentBreakpoint >= 5) {
+  else if (screenWidth >= breakpoints.desktop) {
     renderList = <DesktopList />
   }
   return (
@@ -96,7 +96,7 @@ const List = props => {
   )
 }
   
-export default withBreakpoints(ListComponent)
+export default withBreakpoints(MyComponent)
 ```
 
 ## Server side rendering
@@ -105,21 +105,27 @@ export default withBreakpoints(ListComponent)
 ```js
 // server.js
 
-const breakpoints = [
-  320,
-  375,
-  768,
-  992,
-  1200,
-  1560 
-]
+import ReactBreakpoints from 'react-breakpoints'
 
-const guessedBreakpoint = 0 // create your own logic to generate this number
+const breakpoints = {
+  mobile: 320,
+  mobileLandscape: 480,
+  tablet: 768,
+  tabletLandscape: 1024,
+  desktop: 1200,
+  desktopLarge: 1500,
+  desktopWide: 1920,
+}
+
+const guessedBreakpoint = breakpoints.mobile // create your own logic to generate this number
 
 const markup = renderToString(
-  <BreakpointsProvider guessedBreakpoint={guessedBreakpoint} breakpoints={breakpoints}>
+  <ReactBreakpoints 
+    guessedBreakpoint={guessedBreakpoint} 
+    breakpoints={breakpoints}
+  >
     <App/>
-  <BreakpointsProvider />
+  <ReactBreakpoints />
 )
 ```
 
@@ -131,9 +137,63 @@ import { withBreakpoints } from 'react-breakpoints'
 @withBreakpoints
 class Navigation extends React.Component {
   render() {
-    return this.props.currentBreakpoint > 3
+    return this.props.screenWidth > this.props.breakpoints.desktop
       ? <DesktopNavigation />
       : <TouchNavigation />
   }
 }
+```
+## Options
+
+### `debounceResize: bool` option
+By default, this library does NOT debounce the `resize` listener. However, by passing the `debounceResize` prop to the `ReactBreakpoints` component it will be enabled with a default delay.
+
+```js
+ReactDOM.render(
+  <ReactBreakpoints
+    breakpoints={...}
+    debounceResize={true}
+  >
+    <App />
+  </ReactBreakpoints>  
+  , document.getElementById('root')
+)
+```
+
+### `debounceDelay: number[ms]` option
+Set a custom delay in milliseconds for how the length of the debounce wait.
+
+```js
+ReactDOM.render(
+  <ReactBreakpoints
+    breakpoints={...}
+    debounceResize={true}
+    debounceDelay={100}
+  >
+    <App />
+  </ReactBreakpoints>  
+  , document.getElementById('root')
+)
+```
+
+### `defaultBreakpoint: number` option
+In case you always want to default to a certain breakpoint, say you're building a mobile-only application - you can pass the mobile breakpoint here.
+
+```js
+
+const breakpoints = {
+  mobile: 320,
+  tablet: 768,
+  desktop: 1025,
+}
+
+ReactDOM.render(
+  <ReactBreakpoints
+    breakpoints={breakpoints}
+    defaultBreakpoint={breakpoints.mobile}
+  >
+    <App />
+  </ReactBreakpoints>  
+  , document.getElementById('root')
+)
 ```
