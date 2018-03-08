@@ -27,7 +27,7 @@ First you need to include the `ReactBreakpoints` component in your component tre
 ```js
 // index.js
 import App from './App'
-import { BreakpointsProvider } from 'react-breakpoints'
+import ReactBreakpoints from 'react-breakpoints'
 
 const breakpoints = {
   mobile: 320,
