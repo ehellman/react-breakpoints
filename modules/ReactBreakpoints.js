@@ -66,7 +66,7 @@ class ReactBreakpoints extends React.Component {
     if (typeof this.props.breakpoints !== 'object') throw new Error(ERRORS.NOT_OBJECT)
     this.props.breakpoints !== this.state.breakpoints && 
       this.setState({ breakpoints: this.props.breakpoints })
-    if (window !== undefined) {
+    if (typeof window !== undefined) {
       if (this.props.debounceResize) {
         window.addEventListener('resize', debounce(this.readWidth, this.props.debounceDelay))
       } else {
@@ -78,7 +78,7 @@ class ReactBreakpoints extends React.Component {
 
   }
   componentWillUnmount() {
-    if (window !== undefined) {
+    if (typeof window !== undefined) {
       if (this.props.debounceResize) {
         window.addEventListener('resize', debounce(this.readWidth, this.props.debounceDelay))
       } else {
