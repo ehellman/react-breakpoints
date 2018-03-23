@@ -7,15 +7,15 @@ import { ERRORS } from './messages'
 class ReactBreakpoints extends React.Component {
   static contextTypes = {
     screenWidth: PropTypes.number,
-    breakpoints: PropTypes.objectOf(PropTypes.number),
+    breakpoints: PropTypes.objectOf(PropTypes.number)
   }
   static childContextTypes = {
     screenWidth: PropTypes.number,
-    breakpoints: PropTypes.objectOf(PropTypes.number),
+    breakpoints: PropTypes.objectOf(PropTypes.number)
   }
   static defaultProps = {
     debounceResize: true,
-    debounceDelay: 50,
+    debounceDelay: 50
   }
   static propTypes = {
     /*
@@ -44,45 +44,51 @@ class ReactBreakpoints extends React.Component {
       @debounceDelay
       Set a custom delay for how long the debounce timeout should be.
      */
-    debounceDelay: PropTypes.number,
+    debounceDelay: PropTypes.number
   }
   constructor(props, context) {
     super(props, context)
     this.state = {
       screenWidth: this.props.guessedBreakpoint || this.props.defaultBreakpoint,
-      breakpoints: this.props.breakpoints || {},
+      breakpoints: this.props.breakpoints || {}
     }
   }
   getChildContext() {
     return {
       breakpoints: {
-        ...this.state.breakpoints,
+        ...this.state.breakpoints
       },
-      screenWidth: this.state.screenWidth,
+      screenWidth: this.state.screenWidth
     }
   }
   componentWillMount() {
     if (!this.props.breakpoints) throw new Error(ERRORS.NO_BREAKPOINTS)
-    if (typeof this.props.breakpoints !== 'object') throw new Error(ERRORS.NOT_OBJECT)
-    this.props.breakpoints !== this.state.breakpoints && 
+    if (typeof this.props.breakpoints !== 'object')
+      throw new Error(ERRORS.NOT_OBJECT)
+    this.props.breakpoints !== this.state.breakpoints &&
       this.setState({ breakpoints: this.props.breakpoints })
-    if (typeof window !== undefined) {
+    if (typeof window !== 'undefined') {
       if (this.props.debounceResize) {
-        window.addEventListener('resize', debounce(this.readWidth, this.props.debounceDelay))
+        window.addEventListener(
+          'resize',
+          debounce(this.readWidth, this.props.debounceDelay)
+        )
       } else {
-        window.addEventListener('resize', this.readWidth)        
+        window.addEventListener('resize', this.readWidth)
       }
       window.addEventListener('orientationchange', this.readWidth)
       window.addEventListener('load', this.readWidth)
     }
-
   }
   componentWillUnmount() {
-    if (typeof window !== undefined) {
+    if (typeof window !== 'undefined') {
       if (this.props.debounceResize) {
-        window.addEventListener('resize', debounce(this.readWidth, this.props.debounceDelay))
+        window.addEventListener(
+          'resize',
+          debounce(this.readWidth, this.props.debounceDelay)
+        )
       } else {
-        window.addEventListener('resize', this.readWidth)        
+        window.addEventListener('resize', this.readWidth)
       }
       window.removeEventListener('orientationchange', this.readWidth)
       window.removeEventListener('load', this.readWidth)
@@ -96,13 +102,9 @@ class ReactBreakpoints extends React.Component {
     })
   }
   render() {
-    const {
-      children
-    } = this.props
+    const { children } = this.props
     return (
-      <Provider value={this.getChildContext()}>
-        {children ? React.Children.only(children) : null}
-      </Provider>
+      <Provider value={this.getChildContext()}>{children && children}</Provider>
     )
   }
 }
