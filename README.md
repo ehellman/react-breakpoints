@@ -8,16 +8,15 @@ This library solves that.
 
 `react-breakpoints` allows you to use the viewport width to load different components, opening up for building more complex responsive applications without suffering the performance problems of hidden desktop components on your mobile site and vice versa.
 
-This library is not dependent on Redux, see documentation for instructions on how to use.
+Version 2.0.0 was rewrite with the new context API that came in React `16.3.0`. A polyfill for older React versions is included in the library, so it is backwards compatible with `15.x.x` and `16.x.x`.
 
-Version 2.0.0 is a rewrite with the new context API that came in React `16.3.0`. A polyfill for older React versions is included in the library, so it is backwards compatible with `15.x.x` and `16.x.x`.
+Version 3.0.0 introduced `<Media>` with `renderProps` an alternative to the `withBreakpoints` HOC.
 
 ## Roadmap
 
-**VERSION 3.0.0**
-- [ ] Test that `guessedBreakpoint` prop from server side rendering works, make changes if needed.
 - [ ] Example project
 - [ ] `debounceOptions` object passdown if needed.
+- [ ] forwardRefs
 
 ## Installation
 `npm install --save react-breakpoints`
@@ -51,17 +50,43 @@ ReactDOM.render(
 
 ## Inside your components
 
-When you want access to the current screen width inside a component you import the `withBreakpoints` function, wrapping your component when you export it. This will give you access to `props.screenWidth` which updates whenever you resize your window or your device orientation changes and `props.breakpoints` which is the original object which you supplied to the `ReactBreakpoints` component.
+When you want access to the current screen width inside a component you import the `withBreakpoints` function, wrapping your component when you export it. This will give you access to `props.currentBreakpoint` which updates whenever you resize your window to the point where it hits a new breakpoint, or your device orientation changes. It also adds `props.breakpoints` which is the original object which you supplied to the `ReactBreakpoints` component, so you can make comparisons with `props.currentBreakpoint`.
+
+### Render Props
+
+```js
+import { Media } from 'react-breakpoints'
+
+class Navigation extends React.Component {
+  render() {
+    const { breakpoints, currentBreakpoint } = this.props
+    return (
+      <Media>
+        {({ breakpoints, currentBreakpoint }) =>
+          breakpoints[currentBreakpoint] > breakpoints.desktop
+            ? <DesktopNavigation />
+            : <TouchNavigation />
+        }
+      </Media>
+    )
+  }
+}
+
+export default Navigation
+```
+
+### HOC
 
 ```js
 import { withBreakpoints } from 'react-breakpoints'
 
 class Navigation extends React.Component {
   render() {
+    const { breakpoints, currentBreakpoint } = this.props
     return (
       <div>
         {
-          this.props.screenWidth > this.props.breakpoints.desktop
+          breakpoints[currentBreakpoint] > breakpoints.desktop
             ? <DesktopNavigation />
             : <TouchNavigation />
         }
@@ -70,38 +95,38 @@ class Navigation extends React.Component {
   }
 }
 
-
 export default withBreakpoints(Navigation)
 ```
 
-It works the exact same way in stateless components, here is a more extensive example:
+Here is a more extensive example with renderProps:
 
 ```js
-import { withBreakpoints } from 'react-breakpoints'
+import { Media } from 'react-breakpoints'
 
-const MyComponent = ({ screenWidth, breakpoints }) => {
-  let renderList
-  if (screenWidth < breakpoints.tablet) {
-    renderList = <MobileList />
-  }
-  else if (screenWidth >= breakpoints.tablet && screenWidth < breakpoints.desktop) {
-    renderList = <TabletList />
-  }
-  else if (screenWidth >= breakpoints.desktop) {
-    renderList = <DesktopList />
-  }
-  return (
-    <div>
-      <label>Select from the list below:</label>
-      {renderList}
-    </div>
-  )
-}
+const MyComponent = (props) => (
+  <div>
+    <label>Select from the list below:</label>
+    <Media>
+      {
+        ({ breakpoints, currentBreakpoint }) => {
+          switch (currentBreakpoint) {
+            case breakpoints.mobile:
+              return <MobileList />
+            case breakpoints.tablet:
+              return <TabletList />
+            case breakpoints.desktop:
+              return <DesktopList />
+          }
+        }
+      }
+    </Media>
+  </div>
+)
   
-export default withBreakpoints(MyComponent)
+export default MyComponent
 ```
 
-## Server side rendering
+## Server side rendering (optional)
 **WARNING:** This feature is experimental.
 
 ```js
@@ -119,7 +144,7 @@ const breakpoints = {
   desktopWide: 1920,
 }
 
-const guessedBreakpoint = breakpoints.mobile // create your own logic to generate this number
+const guessedBreakpoint = breakpoints.mobile // create your own logic to generate this 
 
 const markup = renderToString(
   <ReactBreakpoints 
@@ -131,20 +156,6 @@ const markup = renderToString(
 )
 ```
 
-## With ES7 decorators
-
-```js
-import { withBreakpoints } from 'react-breakpoints'
-
-@withBreakpoints
-class Navigation extends React.Component {
-  render() {
-    return this.props.screenWidth > this.props.breakpoints.desktop
-      ? <DesktopNavigation />
-      : <TouchNavigation />
-  }
-}
-```
 ## Options
 
 ### `debounceResize: bool` option

@@ -64,8 +64,8 @@ class ReactBreakpoints extends React.Component {
       this.setState({ breakpoints: this.props.breakpoints })
 
     if (typeof window !== 'undefined') {
-      // initial width calculation
-      this.readWidth()
+
+      this.readWidth() // initial width calculation
 
       if (this.props.debounceResize) {
         window.addEventListener(
@@ -76,11 +76,9 @@ class ReactBreakpoints extends React.Component {
         window.addEventListener('resize', this.readWidth)
       }
       window.addEventListener('orientationchange', this.readWidth)
-      window.addEventListener('load', this.readWidth)
     }
   }
   componentWillUnmount() {
-    // clean up listeners
     if (typeof window !== 'undefined') {
       if (this.props.debounceResize) {
         window.addEventListener(
@@ -91,17 +89,25 @@ class ReactBreakpoints extends React.Component {
         window.addEventListener('resize', this.readWidth)
       }
       window.removeEventListener('orientationchange', this.readWidth)
-      window.removeEventListener('load', this.readWidth)
     }
   }
   calculateCurrentBreakpoint(screenWidth) {
     let currentBreakpoint = null
-    Object.keys(this.state.breakpoints).map(breakpoint => {
-      const breakpointPixelValue = this.state.breakpoints[breakpoint]
-      if (!currentBreakpoint && screenWidth < breakpointPixelValue) {
-        currentBreakpoint = breakpoint
-      }
-    })
+    const breakpointKeys = Object.keys(this.state.breakpoints)
+    new Array(...breakpointKeys)
+      .reverse() // reverse array to put largest breakpoint first
+      .map(breakpoint => {
+        const breakpointPixelValue = this.state.breakpoints[breakpoint]
+        if (!currentBreakpoint && screenWidth >= breakpointPixelValue) {
+          currentBreakpoint = breakpoint
+        }
+      })
+    // If currentBreakpoint is null here, screenWidth is below lowest breakpoint,
+    // so it will still be set to equal lowest breakpoint instead of null
+    if (currentBreakpoint === null) {
+      currentBreakpoint = breakpointKeys[0]
+    }
+
     return currentBreakpoint
   }
   readWidth = event => {
@@ -124,10 +130,10 @@ class ReactBreakpoints extends React.Component {
   getContextValues = () => ({
     breakpoints: {
       ...this.state.breakpoints,
-      ...(this.props.snapMode && {
-        current: this.state.currentBreakpoint,
-      }),
     },
+    ...(this.props.snapMode && {
+      currentBreakpoint: this.state.currentBreakpoint,
+    }),
     ...(!this.props.snapMode && {
       screenWidth: this.state.screenWidth,
     }),
