@@ -14,11 +14,12 @@ Version 3.0.0 introduced `<Media>` with `renderProps` an alternative to the `wit
 
 ## Roadmap
 
-- [ ] Example project
-- [ ] `debounceOptions` object passdown if needed.
-- [ ] forwardRefs
+* [ ] Example project
+* [ ] `debounceOptions` object passdown if needed.
+* [ ] forwardRefs
 
 ## Installation
+
 `npm install --save react-breakpoints`
 
 ## Usage
@@ -43,8 +44,8 @@ const breakpoints = {
 ReactDOM.render(
   <ReactBreakpoints breakpoints={breakpoints}>
     <App />
-  </ReactBreakpoints>, 
-  document.getElementById('root')
+  </ReactBreakpoints>,
+  document.getElementById('root'),
 )
 ```
 
@@ -63,9 +64,11 @@ class Navigation extends React.Component {
     return (
       <Media>
         {({ breakpoints, currentBreakpoint }) =>
-          breakpoints[currentBreakpoint] > breakpoints.desktop
-            ? <DesktopNavigation />
-            : <TouchNavigation />
+          breakpoints[currentBreakpoint] > breakpoints.desktop ? (
+            <DesktopNavigation />
+          ) : (
+            <TouchNavigation />
+          )
         }
       </Media>
     )
@@ -85,11 +88,11 @@ class Navigation extends React.Component {
     const { breakpoints, currentBreakpoint } = this.props
     return (
       <div>
-        {
-          breakpoints[currentBreakpoint] > breakpoints.desktop
-            ? <DesktopNavigation />
-            : <TouchNavigation />
-        }
+        {breakpoints[currentBreakpoint] > breakpoints.desktop ? (
+          <DesktopNavigation />
+        ) : (
+          <TouchNavigation />
+        )}
       </div>
     )
   }
@@ -103,30 +106,29 @@ Here is a more extensive example with renderProps:
 ```js
 import { Media } from 'react-breakpoints'
 
-const MyComponent = (props) => (
+const MyComponent = props => (
   <div>
     <label>Select from the list below:</label>
     <Media>
-      {
-        ({ breakpoints, currentBreakpoint }) => {
-          switch (currentBreakpoint) {
-            case breakpoints.mobile:
-              return <MobileList />
-            case breakpoints.tablet:
-              return <TabletList />
-            case breakpoints.desktop:
-              return <DesktopList />
-          }
+      {({ breakpoints, currentBreakpoint }) => {
+        switch (currentBreakpoint) {
+          case breakpoints.mobile:
+            return <MobileList />
+          case breakpoints.tablet:
+            return <TabletList />
+          case breakpoints.desktop:
+            return <DesktopList />
         }
-      }
+      }}
     </Media>
   </div>
 )
-  
+
 export default MyComponent
 ```
 
 ## Server side rendering (optional)
+
 **WARNING:** This feature is experimental.
 
 ```js
@@ -144,11 +146,11 @@ const breakpoints = {
   desktopWide: 1920,
 }
 
-const guessedBreakpoint = breakpoints.mobile // create your own logic to generate this 
+const guessedBreakpoint = breakpoints.mobile // create your own logic to generate this
 
 const markup = renderToString(
-  <ReactBreakpoints 
-    guessedBreakpoint={guessedBreakpoint} 
+  <ReactBreakpoints
+    guessedBreakpoint={guessedBreakpoint}
     breakpoints={breakpoints}
   >
     <App/>
@@ -159,6 +161,7 @@ const markup = renderToString(
 ## Options
 
 ### `debounceResize: bool` option
+
 By default, this library does NOT debounce the `resize` listener. However, by passing the `debounceResize` prop to the `ReactBreakpoints` component it will be enabled with a default delay.
 
 ```js
@@ -174,6 +177,7 @@ ReactDOM.render(
 ```
 
 ### `debounceDelay: number[ms]` option
+
 Set a custom delay in milliseconds for how the length of the debounce wait.
 
 ```js
@@ -190,10 +194,10 @@ ReactDOM.render(
 ```
 
 ### `defaultBreakpoint: number` option
+
 In case you always want to default to a certain breakpoint, say you're building a mobile-only application - you can pass the mobile breakpoint here.
 
 ```js
-
 const breakpoints = {
   mobile: 320,
   tablet: 768,
@@ -206,7 +210,7 @@ ReactDOM.render(
     defaultBreakpoint={breakpoints.mobile}
   >
     <App />
-  </ReactBreakpoints>  
-  , document.getElementById('root')
+  </ReactBreakpoints>,
+  document.getElementById('root'),
 )
 ```
