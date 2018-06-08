@@ -3,3 +3,4 @@
 lib
 es
 .vscode
+example/node_modules

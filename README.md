@@ -14,7 +14,6 @@ Version 3.0.0 introduced `<Media>` with `renderProps` an alternative to the `wit
 
 ## Roadmap
 
-* [ ] Example project
 * [ ] `debounceOptions` object passdown if needed.
 * [ ] forwardRefs
 
