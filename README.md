@@ -4,18 +4,15 @@
 
 This library solves the problem that CSS media queries alone could not solve. Sometimes you want to create an application that looks a certain way on desktop and a certain way on mobile. Sometimes the components look too different for you to be able to just change the CSS, you have to make one component for desktop and another for mobile. This is bad, because the JavaScript for the hidden component is still running in the background even though you are not seeing it.
 
-This library solves that.
-
 `react-breakpoints` allows you to use the viewport width to load different components, opening up for building more complex responsive applications without suffering the performance problems of hidden desktop components on your mobile site and vice versa.
 
-Version 2.0.0 was rewrite with the new context API that came in React `16.3.0`. A polyfill for older React versions is included in the library, so it is backwards compatible with `15.x.x` and `16.x.x`.
+Version 2.0.0 was rewrite with the new context API that came in React `16.3.0`. A polyfill for older React versions is included in the library, so it is backwards compatible with `15.x.x` and `16.x.x`. However, version 4.0.0 will no longer support `15.x.x`.
 
 Version 3.0.0 introduced `<Media>` with `renderProps` an alternative to the `withBreakpoints` HOC.
 
 ## Roadmap
 
 * [ ] `debounceOptions` object passdown if needed.
-* [ ] forwardRefs
 
 ## Installation
 
@@ -60,6 +57,8 @@ import { Media } from 'react-breakpoints'
 class Navigation extends React.Component {
   render() {
     const { breakpoints, currentBreakpoint } = this.props
+    console.log(breakpoints) // { small: 320, medium: 768, ... }
+    console.log(currentBreakpoint) // 'small'
     return (
       <Media>
         {({ breakpoints, currentBreakpoint }) =>
@@ -107,7 +106,7 @@ import { Media } from 'react-breakpoints'
 
 const MyComponent = props => (
   <div>
-    <label>Select from the list below:</label>
+    <h3>Select from the list below:</h3>
     <Media>
       {({ breakpoints, currentBreakpoint }) => {
         switch (currentBreakpoint) {
@@ -126,9 +125,7 @@ const MyComponent = props => (
 export default MyComponent
 ```
 
-## Server side rendering (optional)
-
-**WARNING:** This feature is experimental.
+## Server side rendering
 
 ```js
 // server.js
@@ -194,7 +191,7 @@ ReactDOM.render(
 
 ### `defaultBreakpoint: number` option
 
-In case you always want to default to a certain breakpoint, say you're building a mobile-only application - you can pass the mobile breakpoint here.
+In case you always want to default to a certain breakpoint.
 
 ```js
 const breakpoints = {
