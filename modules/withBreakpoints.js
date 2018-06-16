@@ -6,14 +6,24 @@ import { Consumer } from './BreakpointsContext'
 
 
 const withBreakpoints = Component => {
-  const C = props => (
-    <Consumer>
-      {
-        context => 
-          <Component {...props} {...context}></Component>
-      }
-    </Consumer>
-  )
+  // Remove conditional application of forwardRef in 4.0
+  const C = React.forwardRef
+    ? React.forwardRef((props, ref) => (
+      <Consumer>
+        {
+          context => 
+            <Component {...props} ref={ref} {...context}></Component>
+        }
+      </Consumer>
+    ))
+    : props => (
+      <Consumer>
+        {
+          context => 
+            <Component {...props} {...context}></Component>
+        }
+      </Consumer>
+    )
   C.displayName = `withBreakpoints(${Component.displayName || Component.name})`
   return hoistStatics(C, Component)
 } 
