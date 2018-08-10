@@ -56,9 +56,6 @@ import { Media } from 'react-breakpoints'
 
 class Navigation extends React.Component {
   render() {
-    const { breakpoints, currentBreakpoint } = this.props
-    console.log(breakpoints) // { small: 320, medium: 768, ... }
-    console.log(currentBreakpoint) // 'small'
     return (
       <Media>
         {({ breakpoints, currentBreakpoint }) =>
@@ -150,7 +147,7 @@ const markup = renderToString(
     breakpoints={breakpoints}
   >
     <App/>
-  <ReactBreakpoints />
+  </ReactBreakpoints>
 )
 ```
 
