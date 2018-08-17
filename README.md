@@ -153,6 +153,22 @@ const markup = renderToString(
 
 ## Options
 
+### `breakpointUnit: string` option
+
+Set the unit type of the breakpoints. Either 'em' or 'px'. The default is 'px'.
+
+```js
+ReactDOM.render(
+  <ReactBreakpoints
+    breakpoints={...}
+    breakpointUnit="em"
+  >
+    <App />
+  </ReactBreakpoints>  
+  , document.getElementById('root')
+)
+```
+
 ### `debounceResize: bool` option
 
 By default, this library does NOT debounce the `resize` listener. However, by passing the `debounceResize` prop to the `ReactBreakpoints` component it will be enabled with a default delay.
