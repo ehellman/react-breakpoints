@@ -54,6 +54,7 @@
   "dependencies": {
     "lodash.debounce": "4.0.8",
     "hoist-non-react-statics": "2.5.0",
-    "create-react-context": "0.2.1"
+    "create-react-context": "0.2.1",
+    "polished": "^1.9.3"
   }
 }
