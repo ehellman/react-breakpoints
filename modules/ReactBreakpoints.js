@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import debounce from 'lodash.debounce'
-import { em, stripUnit } from 'polished';
+import { em, stripUnit } from 'polished'
 
 import { Provider } from './BreakpointsContext'
 import { ERRORS } from './messages'
@@ -23,8 +23,8 @@ class ReactBreakpoints extends React.Component {
       @breakpointUnit
       The type of unit that your breakpoints should use - px or em.
      */
-    breakpointUnit: PropTypes.oneOf(['px','em']),
-      /*
+    breakpointUnit: PropTypes.oneOf(['px', 'em']),
+    /*
       @guessedBreakpoint
       When rendering on the server, you can do your own magic with for example UA
       to guess which viewport width a user probably has.
@@ -72,7 +72,6 @@ class ReactBreakpoints extends React.Component {
       this.setState({ breakpoints: this.props.breakpoints })
 
     if (typeof window !== 'undefined') {
-
       this.readWidth() // initial width calculation
 
       if (this.props.debounceResize) {
@@ -124,7 +123,8 @@ class ReactBreakpoints extends React.Component {
         ? event.target.innerWidth
         : window.innerWidth
       : window.innerWidth
-    let screenWidth = this.props.breakpointUnit === 'em' ? stripUnit(em(width)) ? width
+    let screenWidth =
+      this.props.breakpointUnit === 'em' ? stripUnit(em(width)) : width
     const current = this.calculateCurrentBreakpoint(screenWidth)
 
     const { snapMode } = this.props
