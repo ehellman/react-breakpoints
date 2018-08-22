@@ -146,8 +146,8 @@ const markup = renderToString(
     guessedBreakpoint={guessedBreakpoint}
     breakpoints={breakpoints}
   >
-    <App/>
-  </ReactBreakpoints>
+    <App />
+  </ReactBreakpoints>,
 )
 ```
 

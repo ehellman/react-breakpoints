@@ -55,22 +55,38 @@ class ReactBreakpoints extends React.Component {
      */
     snapMode: PropTypes.bool,
   }
-  state = {
-    breakpoints: this.props.breakpoints || {},
-    screenWidth: this.props.guessedBreakpoint || this.props.defaultBreakpoint,
-    currentBreakpoint: null,
+
+  constructor(props) {
+    super(props)
+    const { breakpoints, defaultBreakpoint, guessedBreakpoint } = this.props
+
+    // throw Error if no breakpoints were passed
+    if (!breakpoints) throw new Error(ERRORS.NO_BREAKPOINTS)
+    // throw Error if breakpoints is not an object
+    if (typeof breakpoints !== 'object') throw new Error(ERRORS.NOT_OBJECT)
+
+    let currentBreakpoint = null
+
+    // if we are on the client, we directly compote the breakpoint using window width
+    if (global.window) {
+      currentBreakpoint = this.calculateCurrentBreakpoint(
+        global.window.innerWidth,
+      )
+    } else if (guessedBreakpoint) {
+      currentBreakpoint = this.calculateCurrentBreakpoint(guessedBreakpoint)
+    } else if (defaultBreakpoint) {
+      currentBreakpoint = this.calculateCurrentBreakpoint(defaultBreakpoint)
+    }
+    this.state = {
+      breakpoints: breakpoints || {},
+      // if we are on the client, we set the screen width to the window width,
+      // otherwise, we use the default breakpoint
+      screenWidth: global.window ? global.window.innerWidth : defaultBreakpoint,
+      currentBreakpoint: currentBreakpoint,
+    }
   }
 
   componentDidMount() {
-    // throw Error if no breakpoints were passed
-    if (!this.props.breakpoints) throw new Error(ERRORS.NO_BREAKPOINTS)
-    // throw Error if breakpoints is not an object
-    if (typeof this.props.breakpoints !== 'object')
-      throw new Error(ERRORS.NOT_OBJECT)
-
-    this.props.breakpoints !== this.state.breakpoints &&
-      this.setState({ breakpoints: this.props.breakpoints })
-
     if (typeof window !== 'undefined') {
       this.readWidth() // initial width calculation
 
@@ -100,11 +116,11 @@ class ReactBreakpoints extends React.Component {
   }
   calculateCurrentBreakpoint(screenWidth) {
     let currentBreakpoint = null
-    const breakpointKeys = Object.keys(this.state.breakpoints)
+    const breakpointKeys = Object.keys(this.props.breakpoints)
     new Array(...breakpointKeys)
       .reverse() // reverse array to put largest breakpoint first
       .map(breakpoint => {
-        const breakpointValue = this.state.breakpoints[breakpoint]
+        const breakpointValue = this.props.breakpoints[breakpoint]
         if (!currentBreakpoint && screenWidth >= breakpointValue) {
           currentBreakpoint = breakpoint
         }
@@ -138,7 +154,7 @@ class ReactBreakpoints extends React.Component {
   }
   getContextValues = () => ({
     breakpoints: {
-      ...this.state.breakpoints,
+      ...this.props.breakpoints,
     },
     ...(this.props.snapMode && {
       currentBreakpoint: this.state.currentBreakpoint,
