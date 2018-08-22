@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import debounce from 'lodash.debounce'
-import { em, stripUnit } from 'polished'
 
+import { em, stripUnit } from './utils'
 import { Provider } from './BreakpointsContext'
 import { ERRORS } from './messages'
 
