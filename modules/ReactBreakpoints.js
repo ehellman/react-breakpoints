@@ -134,16 +134,15 @@ class ReactBreakpoints extends React.Component {
     return currentBreakpoint
   }
   readWidth = event => {
+    const { breakpointUnit, snapMode } = this.props
     const width = event
       ? event.target.innerWidth
         ? event.target.innerWidth
         : window.innerWidth
       : window.innerWidth
-    let screenWidth =
-      this.props.breakpointUnit === 'em' ? stripUnit(em(width)) : width
+    let screenWidth = breakpointUnit === 'em' ? stripUnit(em(width)) : width
     const current = this.calculateCurrentBreakpoint(screenWidth)
 
-    const { snapMode } = this.props
     this.setState(state => {
       if (state.currentBreakpoint === current) return null
       return {
