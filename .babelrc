@@ -12,7 +12,6 @@
                 }]
             ],
             "plugins": [
-                "babel-plugin-polished",
                 "transform-export-extensions",
                 "transform-object-rest-spread",
                 "transform-class-properties"
@@ -26,7 +25,6 @@
                         "**/packages/**",
                     ]
                 }],
-                "babel-plugin-polished",
                 "transform-export-extensions",
                 "transform-object-rest-spread",
                 "transform-class-properties"
@@ -45,7 +43,6 @@
         "react"
     ],
     "plugins": [
-        "babel-plugin-polished",
         "transform-export-extensions",
         "transform-object-rest-spread",
         "transform-class-properties"
