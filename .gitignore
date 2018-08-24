@@ -3,4 +3,5 @@
 lib
 es
 .vscode
+.idea
 example/node_modules

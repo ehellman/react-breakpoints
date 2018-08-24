@@ -1,11 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import debounce from 'lodash.debounce'
+
+import { em, stripUnit } from './utils'
 import { Provider } from './BreakpointsContext'
 import { ERRORS } from './messages'
 
 class ReactBreakpoints extends React.Component {
   static defaultProps = {
+    breakpointUnit: 'px',
     debounceResize: false,
     debounceDelay: 50,
     snapMode: true,
@@ -16,6 +19,11 @@ class ReactBreakpoints extends React.Component {
       Your breakpoints object.
      */
     breakpoints: PropTypes.objectOf(PropTypes.number),
+    /*
+      @breakpointUnit
+      The type of unit that your breakpoints should use - px or em.
+     */
+    breakpointUnit: PropTypes.oneOf(['px', 'em']),
     /*
       @guessedBreakpoint
       When rendering on the server, you can do your own magic with for example UA
@@ -112,8 +120,8 @@ class ReactBreakpoints extends React.Component {
     new Array(...breakpointKeys)
       .reverse() // reverse array to put largest breakpoint first
       .map(breakpoint => {
-        const breakpointPixelValue = this.props.breakpoints[breakpoint]
-        if (!currentBreakpoint && screenWidth >= breakpointPixelValue) {
+        const breakpointValue = this.props.breakpoints[breakpoint]
+        if (!currentBreakpoint && screenWidth >= breakpointValue) {
           currentBreakpoint = breakpoint
         }
       })
@@ -126,19 +134,20 @@ class ReactBreakpoints extends React.Component {
     return currentBreakpoint
   }
   readWidth = event => {
+    const { breakpointUnit, snapMode } = this.props
     const width = event
       ? event.target.innerWidth
         ? event.target.innerWidth
         : window.innerWidth
       : window.innerWidth
-    const current = this.calculateCurrentBreakpoint(width)
+    let screenWidth = breakpointUnit === 'em' ? stripUnit(em(width)) : width
+    const current = this.calculateCurrentBreakpoint(screenWidth)
 
-    const { snapMode } = this.props
     this.setState(state => {
       if (state.currentBreakpoint === current) return null
       return {
         currentBreakpoint: snapMode ? current : null,
-        screenWidth: snapMode ? null : width,
+        screenWidth: snapMode ? null : screenWidth,
       }
     })
   }
