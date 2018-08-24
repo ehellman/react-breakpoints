@@ -1,6 +1,6 @@
 {
   "name": "react-breakpoints",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "A library that allows you to mount/unmount components depending on the viewport size. Welcome to the next level of responsive React applications.",
   "main": "lib/index.js",
   "repository": {
