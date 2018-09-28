@@ -115,23 +115,17 @@ class ReactBreakpoints extends React.Component {
     }
   }
   calculateCurrentBreakpoint(screenWidth) {
-    let currentBreakpoint = null
-    const breakpointKeys = Object.keys(this.props.breakpoints)
-    new Array(...breakpointKeys)
-      .reverse() // reverse array to put largest breakpoint first
-      .map(breakpoint => {
-        const breakpointValue = this.props.breakpoints[breakpoint]
-        if (!currentBreakpoint && screenWidth >= breakpointValue) {
-          currentBreakpoint = breakpoint
-        }
-      })
-    // If currentBreakpoint is null here, screenWidth is below lowest breakpoint,
-    // so it will still be set to equal lowest breakpoint instead of null
-    if (currentBreakpoint === null) {
-      currentBreakpoint = breakpointKeys[0]
+    const breakpoints = Object.keys(this.props.breakpoints)
+      .map(k => [k, this.props.breakpoints[k]])
+      .sort((a, b) => a[1] < b[1])
+    for (let b of breakpoints) {
+      if (screenWidth >= b[1]) {
+        return b[0]
+      }
     }
-
-    return currentBreakpoint
+    // screenWidth is below lowest breakpoint,
+    // so it will still be set to equal lowest breakpoint instead of null
+    return breakpoints[breakpoints.length - 1][0]
   }
   readWidth = event => {
     const { breakpointUnit, snapMode } = this.props
