@@ -15,16 +15,14 @@
                 "transform-export-extensions",
                 "transform-object-rest-spread",
                 "transform-class-properties"
+            ],
+            "ignore": [
+                "**/*.test.js"
             ]
         },
         "test": {
+            "presets": ["env","react"],
             "plugins": [
-                ["istanbul", {
-                    "exclude": [
-                        "**/node_modules/**",
-                        "**/packages/**",
-                    ]
-                }],
                 "transform-export-extensions",
                 "transform-object-rest-spread",
                 "transform-class-properties"
