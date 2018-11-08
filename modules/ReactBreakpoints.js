@@ -38,7 +38,7 @@ class ReactBreakpoints extends React.Component {
     defaultBreakpoint: PropTypes.number,
     /*
       @debounceResize
-      If you don't want the resize listener to be debounced, set to false. Defaults to false 
+      If you don't want the resize listener to be debounced, set to false. Defaults to false
       when snapMode is true.
      */
     debounceResize: PropTypes.bool,
@@ -50,8 +50,8 @@ class ReactBreakpoints extends React.Component {
     /*
       @snapMode
       Replaces breakpoints.current with screenWidth, disabling re-render only
-      when breakpoint changes, instead potentially re-rendering when 
-      calculateCurrentBreakpoint returns a new value. 
+      when breakpoint changes, instead potentially re-rendering when
+      calculateCurrentBreakpoint returns a new value.
      */
     snapMode: PropTypes.bool,
   }
@@ -70,20 +70,27 @@ class ReactBreakpoints extends React.Component {
     // if we are on the client, we directly compote the breakpoint using window width
     if (global.window) {
       currentBreakpoint = this.calculateCurrentBreakpoint(
-        global.window.innerWidth,
+        this.convertScreenWidth(global.window.innerWidth),
       )
     } else if (guessedBreakpoint) {
       currentBreakpoint = this.calculateCurrentBreakpoint(guessedBreakpoint)
     } else if (defaultBreakpoint) {
       currentBreakpoint = this.calculateCurrentBreakpoint(defaultBreakpoint)
     }
+
+    const screenWidth = global.window ? this.convertScreenWidth(global.window.innerWidth) : defaultBreakpoint;
     this.state = {
       breakpoints: breakpoints || {},
       // if we are on the client, we set the screen width to the window width,
       // otherwise, we use the default breakpoint
-      screenWidth: global.window ? global.window.innerWidth : defaultBreakpoint,
+      screenWidth: screenWidth,
       currentBreakpoint: currentBreakpoint,
     }
+  }
+
+  convertScreenWidth(screenWidth) {
+    const { breakpointUnit } = this.props;
+    return breakpointUnit === 'em' ? stripUnit(em(screenWidth)) : screenWidth;
   }
 
   componentDidMount() {
@@ -134,13 +141,13 @@ class ReactBreakpoints extends React.Component {
     return currentBreakpoint
   }
   readWidth = event => {
-    const { breakpointUnit, snapMode } = this.props
+    const { snapMode } = this.props
     const width = event
       ? event.target.innerWidth
         ? event.target.innerWidth
         : window.innerWidth
       : window.innerWidth
-    let screenWidth = breakpointUnit === 'em' ? stripUnit(em(width)) : width
+    let screenWidth = this.convertScreenWidth(width);
     const current = this.calculateCurrentBreakpoint(screenWidth)
 
     this.setState(state => {
