@@ -3,6 +3,7 @@
   "version": "3.0.3",
   "description": "A library that allows you to mount/unmount components depending on the viewport size. Welcome to the next level of responsive React applications.",
   "main": "lib/index.js",
+  "types": "index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/ehellman/react-breakpoints.git"
