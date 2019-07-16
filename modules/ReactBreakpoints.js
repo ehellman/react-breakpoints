@@ -117,9 +117,10 @@ class ReactBreakpoints extends React.Component {
       this.readWidth() // initial width calculation
 
       if (this.props.debounceResize) {
+        this.debounceListener = debounce(this.readWidth, this.props.debounceDelay);
         window.addEventListener(
           'resize',
-          debounce(this.readWidth, this.props.debounceDelay),
+          this.debounceListener,
         )
       } else {
         window.addEventListener('resize', this.readWidth)
@@ -130,12 +131,12 @@ class ReactBreakpoints extends React.Component {
   componentWillUnmount() {
     if (typeof window !== 'undefined') {
       if (this.props.debounceResize) {
-        window.addEventListener(
+        window.removeEventListener(
           'resize',
-          debounce(this.readWidth, this.props.debounceDelay),
+          this.debounceListener,
         )
       } else {
-        window.addEventListener('resize', this.readWidth)
+        window.removeEventListener('resize', this.readWidth)
       }
       window.removeEventListener('orientationchange', this.readWidth)
     }
