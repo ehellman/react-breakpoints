@@ -130,12 +130,12 @@ class ReactBreakpoints extends React.Component {
   componentWillUnmount() {
     if (typeof window !== 'undefined') {
       if (this.props.debounceResize) {
-        window.addEventListener(
+        window.removeEventListener(
           'resize',
           debounce(this.readWidth, this.props.debounceDelay),
         )
       } else {
-        window.addEventListener('resize', this.readWidth)
+        window.removeEventListener('resize', this.readWidth)
       }
       window.removeEventListener('orientationchange', this.readWidth)
     }
