@@ -151,6 +151,38 @@ const markup = renderToString(
 )
 ```
 
+In order to avoid mismatch errors (`Warning: Did not expect server HTML to contain ...`), when the guessed breakpoint
+is wrong, you need to provide the same `guessedBreakpoint` on both the server and the client.
+Thanks to this, there will be no error during hydratation and ReactBreakpoint with still render the right 
+breakpoint once the app is mounted.
+```js
+// client.js
+
+import ReactBreakpoints from 'react-breakpoints'
+
+const breakpoints = {
+  mobile: 320,
+  mobileLandscape: 480,
+  tablet: 768,
+  tabletLandscape: 1024,
+  desktop: 1200,
+  desktopLarge: 1500,
+  desktopWide: 1920,
+}
+
+const guessedBreakpoint = window.guessedBreakpoint // you need to inject it from the server
+
+ReactDOM.hydrate(
+  <ReactBreakpoints
+    guessedBreakpoint={guessedBreakpoint}
+    breakpoints={breakpoints}
+  >
+    <App />
+  </ReactBreakpoints>,
+  document.getElementById('root')
+)
+```
+
 ## Options
 
 ### `breakpointUnit: string` option

@@ -68,15 +68,18 @@ class ReactBreakpoints extends React.Component {
     let currentBreakpoint = null
     const sortedBreakpoints = ReactBreakpoints.sortBreakpoints(breakpoints)
 
-    // if we are on the client, we directly compote the breakpoint using window width
-    if (global.window) {
-      currentBreakpoint = ReactBreakpoints.calculateBreakpoint(
-        this.convertScreenWidth(global.window.innerWidth),
-        sortedBreakpoints,
-      )
-    } else if (guessedBreakpoint) {
+    // if there is a guessed breakpoint, we trust it on server AND on client (during hydrate),
+    // to avoid mismatch issues.
+    if (guessedBreakpoint) {
       currentBreakpoint = ReactBreakpoints.calculateBreakpoint(
         guessedBreakpoint,
+        sortedBreakpoints,
+      )
+    }
+    // if we are on the client, we directly compute the breakpoint using window width
+    else if (global.window) {
+      currentBreakpoint = ReactBreakpoints.calculateBreakpoint(
+        this.convertScreenWidth(global.window.innerWidth),
         sortedBreakpoints,
       )
     } else if (defaultBreakpoint) {
